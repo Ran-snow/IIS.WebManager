@@ -46,31 +46,3 @@ jobs:
       targetType: filePath
       filePath: ./build.ps1
       arguments: '--configuration=wac --output-hashing all'
-
-  - task: NuGetCommand@2
-    displayName: 'NuGet pack (development)'
-    condition: not(startsWith(variables['Build.SourceBranch'], 'refs/heads/releases'))
-    inputs:
-      command: pack
-      packagesToPack: '$(Build.SourcesDirectory)/**/*.nuspec'
-      versioningScheme: byEnvVar
-      versionEnvVar: NuGetVersionFull
-
-  - task: NuGetCommand@2
-    displayName: 'NuGet pack (release)'
-    condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/releases')
-    inputs:
-      command: pack
-      packagesToPack: '$(Build.SourcesDirectory)/**/*.nuspec'
-      versioningScheme: byEnvVar
-      versionEnvVar: NuGetVersionSimple
-
-  - task: NuGetCommand@2
-    displayName: 'NuGet push'
-    condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/dev'), eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/heads/preview'), startsWith(variables['Build.SourceBranch'], 'refs/heads/releases'))
-    inputs:
-      command: push
-      packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
-      nuGetFeedType: external
-      publishFeedCredentials: 'IIS-WAC-MyGet'
-      allowPackageConflicts: false
