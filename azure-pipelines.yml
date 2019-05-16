@@ -8,18 +8,12 @@ variables:
 trigger:
   branches:
     include:
-      - dev
       - master
-      - preview/*
-      - releases/*
 pr:
   autoCancel: false
   branches:
     include:
-      - dev
       - master
-      - preview/*
-      - releases/*
 jobs:
 - job: build
   pool:
